@@ -1,0 +1,451 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/FatherTimeVFE369PDGypsi3Consulting/FatherTimeSDKP/blob/main/skills/sdkp-scientific-grounding/schema.json",
+  "title": "SDKP Scientific Grounding Schema",
+  "description": "Machine-readable representation of a Size-Density-Kinetic-Position scientific investigation.",
+  "type": "object",
+  "required": [
+    "question",
+    "sdkp_state",
+    "baseline",
+    "evidence_status"
+  ],
+  "properties": {
+    "question": {
+      "type": "string",
+      "description": "Specific scientific question being investigated."
+    },
+    "sdkp_state": {
+      "type": "object",
+      "description": "SDKP state representation Ψ = (S, ρ, K, P).",
+      "required": [
+        "S",
+        "rho",
+        "K",
+        "P"
+      ],
+      "properties": {
+        "S": {
+          "type": "object",
+          "description": "Characteristic size or geometric scale.",
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "reference_value": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "reference_unit": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "rho": {
+          "type": "object",
+          "description": "Relevant density.",
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "reference_value": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "reference_unit": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "K": {
+          "type": "object",
+          "description": "Kinetic state or kinetic-energy contribution.",
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "velocity": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "velocity_unit": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "energy_model": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "classical",
+                "relativistic",
+                null
+              ]
+            }
+          }
+        },
+        "P": {
+          "description": "Position or spatial/configuration state.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "object"
+            }
+          ]
+        }
+      }
+    },
+    "constants": {
+      "type": "object",
+      "description": "Physical and SDKP constants used by the calculation.",
+      "properties": {
+        "G": {
+          "$ref": "#/$defs/constant"
+        },
+        "c": {
+          "$ref": "#/$defs/constant"
+        },
+        "v_EOS": {
+          "$ref": "#/$defs/constant"
+        },
+        "alpha": {
+          "$ref": "#/$defs/constant"
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "description": "Established scientific baseline used for comparison.",
+      "required": [
+        "equation",
+        "result"
+      ],
+      "properties": {
+        "equation": {
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/$defs/measurement"
+        },
+        "model": {
+          "type": "string"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sdkp_model": {
+      "type": "object",
+      "description": "Explicit SDKP extension being tested.",
+      "properties": {
+        "equation": {
+          "type": "string"
+        },
+        "correction": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "residual": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "relative_residual": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "measurement": {
+      "$ref": "#/$defs/measurement"
+    },
+    "uncertainty": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "standard_deviation",
+            "standard_error",
+            "confidence_interval",
+            "instrument_resolution",
+            "other"
+          ]
+        }
+      }
+    },
+    "sensitivity": {
+      "type": "object",
+      "description": "Parameter sensitivity results.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "effect": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "falsification": {
+      "type": "object",
+      "properties": {
+        "null_hypothesis": {
+          "type": "string"
+        },
+        "alternative_hypothesis": {
+          "type": "string"
+        },
+        "observable": {
+          "type": "string"
+        },
+        "criterion": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "description": "Sources supporting externally obtained information.",
+      "items": {
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "publication_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "retrieval_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parameter": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uncertainty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "reproducibility": {
+      "type": "object",
+      "properties": {
+        "software": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "random_seed": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "deterministic": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence_status": {
+      "type": "string",
+      "enum": [
+        "ESTABLISHED",
+        "DERIVED",
+        "SIMULATION",
+        "HYPOTHESIS",
+        "UNVERIFIED",
+        "FALSIFIED"
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "constant": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uncertainty": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "uncertainty": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
